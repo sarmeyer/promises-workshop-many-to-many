@@ -19,11 +19,13 @@ function Authors_Books() {
 
 router.get('/', function(req, res, next) {
   // get all authors from Authors
-  // using Promise.all map over the array of authors
-  // for each author, get author books
-  // add a property to each author object that is an array of its book objects
+  // THEN for each author, go get all of their book ids from Authors_Books
+  // THEN go get all that author's books
+  // AND add the array of books to the author object as 'books'
+  // render the appropriate template
   // pass an array of authors to the view using locals
 
+  // EXAMPLE: { first_name: 'Laura', last_name: 'Lou', bio: 'her bio', books: [ this should be all of her book objects ]}
 });
 
 router.get('/new', function(req, res, next) {
@@ -63,10 +65,10 @@ router.post('/:id/delete', function (req, res, next) {
 
 router.get('/:id/edit', function (req, res, next) {
   // find the author in Authors
-  // get all associated records from Authors_Books
-  // using Promise.all map over the array of records
-  // return an array of author books from Books
-  // pass array of author books to the view using locals
+  // get all of the authors book_ids from Authors_Books
+  // get all of the authors books from BOOKs
+  // render the corresponding template
+  // use locals to pass books and author to the view
 })
 
 router.post('/:id', function (req, res, next) {
@@ -82,10 +84,10 @@ router.post('/:id', function (req, res, next) {
 
 router.get('/:id', function (req, res, next) {
   // find the author in Authors
-  // get all associated records from Authors_Books
-  // using Promise.all map over the array of records
-  // return an array of author books from Books
-  // pass array of author books to the view using locals
+  // get all of the authors book_ids from Authors_Books
+  // get all of the authors books from BOOKs
+  // render the corresponding template
+  // use locals to pass books and author to the view
 })
 
 module.exports = router;
