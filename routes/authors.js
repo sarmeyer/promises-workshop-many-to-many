@@ -64,11 +64,14 @@ router.post('/:id/delete', function (req, res, next) {
 })
 
 router.get('/:id/edit', function (req, res, next) {
-  // find the author in Authors
-  // get all of the authors book_ids from Authors_Books
-  // get all of the authors books from BOOKs
-  // render the corresponding template
-  // use locals to pass books and author to the view
+  return knex('authors').where('id', req.params.id).first().then(function(author){
+    return knex('authors_books').where('author_id', author.id).pluck('book_id').then(function(booksIds){
+      return knex('books').whereIn('id', booksIds).then(function(books){
+        console.log(books);
+        res.render('authors/edit', {books:books, author_books: books, author:author})
+      })
+    })
+  })
 })
 
 router.post('/:id', function (req, res, next) {
@@ -83,11 +86,13 @@ router.post('/:id', function (req, res, next) {
 })
 
 router.get('/:id', function (req, res, next) {
-  // find the author in Authors
-  // get all of the authors book_ids from Authors_Books
-  // get all of the authors books from BOOKs
-  // render the corresponding template
-  // use locals to pass books and author to the view
+  return knex('authors').where('id', req.params.id).first().then(function(author){
+    return knex('authors_books').where('author_id', author.id).pluck('book_id').then(function(booksId){
+      return knex('books').whereIn('id', booksId).then(function(books){
+        res.render('authors/show', {books: books, author: author})
+      })
+    })
+  })
 })
 
 module.exports = router;
