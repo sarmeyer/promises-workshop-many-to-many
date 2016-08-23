@@ -17,23 +17,23 @@ function Authors_Books() {
 }
 
 router.get('/', function(req, res, next) {
-    return knex('authors').then(function(authors) {
-            Promise.all(
-                authors.map(function(author) {
-                    return knex('authors_books').where('author_id', author.id).pluck('book_id').then(function(bookIds) {
-                        return knex('books').whereIn('id', bookIds).then(function(books) {
-                            author.books = books;
-                            return author
-                        })
+    Authors().then(function(authors) {
+        Promise.all(
+            authors.map(function(author) {
+                return knex('authors_books').where('author_id', author.id).pluck('book_id').then(function(bookIds) {
+                    return knex('books').whereIn('id', bookIds).then(function(books) {
+                        author.books = books;
+                        return author
                     })
                 })
+            })
         ).then(function(authors) {
             res.render('authors/index', {
                 authors: authors
             })
         })
-      })
     })
+})
 
 router.get('/new', function(req, res, next) {
     Books().select().then(function(books) {
@@ -77,9 +77,9 @@ router.post('/:id/delete', function(req, res, next) {
 })
 
 router.get('/:id/edit', function(req, res, next) {
-    return knex('authors').where('id', req.params.id).first().then(function(author) {
-        return knex('authors_books').where('author_id', author.id).pluck('book_id').then(function(booksIds) {
-            return knex('books').whereIn('id', booksIds).then(function(books) {
+    Authors().where('id', req.params.id).first().then(function(author) {
+        Authors_Books().where('author_id', author.id).pluck('book_id').then(function(booksIds) {
+            Books().whereIn('id', booksIds).then(function(books) {
                 res.render('authors/edit', {
                     books: books,
                     author_books: books,
@@ -102,9 +102,9 @@ router.post('/:id', function(req, res, next) {
 })
 
 router.get('/:id', function(req, res, next) {
-    return knex('authors').where('id', req.params.id).first().then(function(author) {
-        return knex('authors_books').where('author_id', author.id).pluck('book_id').then(function(booksId) {
-            return knex('books').whereIn('id', booksId).then(function(books) {
+    Authors().where('id', req.params.id).first().then(function(author) {
+        Authors_Books().where('author_id', author.id).pluck('book_id').then(function(booksId) {
+            Books().whereIn('id', booksId).then(function(books) {
                 res.render('authors/show', {
                     books: books,
                     author: author
