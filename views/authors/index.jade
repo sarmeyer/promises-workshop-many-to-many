@@ -5,7 +5,6 @@ block content
 	div.books-container
 		a.btn.btn-default(href='/authors/new') Add Author
 		for author in authors 
-			p #{author.books}
 			div.well.well-lg 
 				a(href='/authors/#{author.id}')
 					img.thumbnail(src='#{author.portrait_url}')

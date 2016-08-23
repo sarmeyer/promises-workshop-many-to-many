@@ -16,7 +16,20 @@ function Authors() {
 }
 
 router.get('/', function(req, res, next) {
-  // your code here
+  return knex('books').then(function(books){
+    Promise.all(
+      books.map(function(book){
+        return knex('authors_books').where('id', book.id).pluck('author_id').then(function(authorsIds){
+          return knex('authors').whereIn('id', authorsIds).then(function(authors){
+            book.authors = authors;
+            return book;
+          })
+        })
+      })
+    ).then(function(books){
+      res.render('books/index', {books: books})
+    })
+  })
 });
 
 router.get('/new', function(req, res, next) {
@@ -39,7 +52,13 @@ router.post('/', function (req, res, next) {
 })
 
 router.get('/:id/delete', function(req, res, next) {
-  // your code here
+  Books().where('id', req.params.id).first().then(function(book){
+    return knex('authors_books').where('book_id', book.id).pluck('author_id').then(function(authorIds){
+      return knex('authors').whereIn('id', authorIds).then(function(authors){
+        res.render('books/delete', {book: book, authors: authors})
+      })
+    })
+  })
 });
 
 router.post('/:id/delete', function(req, res, next) {
@@ -55,7 +74,13 @@ router.get('/:id/edit', function(req, res, next) {
 });
 
 router.get('/:id', function(req, res, next) {
-  // your code here 
+  return knex('books').where('id', req.params.id).first().then(function(book){
+    return knex('authors_books').where('book_id', book.id).pluck('author_id').then(function(authorIds){
+      return knex('authors').whereIn('id', authorIds).then(function(authors){
+        res.render('books/show', {authors: authors, book: book})
+      })
+    })
+  })
 });
 
 router.post('/:id', function(req, res, next) {
