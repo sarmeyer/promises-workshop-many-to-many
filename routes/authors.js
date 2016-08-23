@@ -54,16 +54,12 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/:id/delete', function(req, res, next) {
-    Authors().where('id', req.params.id).first().then(function(author) {
-        helpers.getAuthorBooks(author).then(function(authorBooks) {
-            Books().select().then(function(books) {
-                res.render('authors/delete', {
-                    author: author,
-                    author_books: authorBooks,
-                    books: books
-                });
-            })
-        })
+    helpers.getAuthorBooks(req.params.id).then(function(author) {
+        res.render('authors/delete', {
+            author: author,
+            author_books: author.books,
+            books: author.books
+        });
     })
 })
 
@@ -77,16 +73,12 @@ router.post('/:id/delete', function(req, res, next) {
 })
 
 router.get('/:id/edit', function(req, res, next) {
-    Authors().where('id', req.params.id).first().then(function(author) {
-        Authors_Books().where('author_id', author.id).pluck('book_id').then(function(booksIds) {
-            Books().whereIn('id', booksIds).then(function(books) {
-                res.render('authors/edit', {
-                    books: books,
-                    author_books: books,
-                    author: author
-                })
-            })
-        })
+    helpers.getAuthorBooks(req.params.id).then(function(author) {
+        res.render('authors/edit', {
+            author: author,
+            author_books: author.books,
+            books: author.books
+        });
     })
 })
 
@@ -102,15 +94,11 @@ router.post('/:id', function(req, res, next) {
 })
 
 router.get('/:id', function(req, res, next) {
-    Authors().where('id', req.params.id).first().then(function(author) {
-        Authors_Books().where('author_id', author.id).pluck('book_id').then(function(booksId) {
-            Books().whereIn('id', booksId).then(function(books) {
-                res.render('authors/show', {
-                    books: books,
-                    author: author
-                })
-            })
-        })
+    helpers.getAuthorBooks(req.params.id).then(function(author) {
+        res.render('authors/delete', {
+            author: author,
+            books: author.books
+        });
     })
 })
 
